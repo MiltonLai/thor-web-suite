@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/builder/xml/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rockbb.thor.commons.impl.mapper.SessionMapper">
+    <cache eviction="LRU" flushInterval="300000" size="128" readOnly="true" />
+    <resultMap type="com.rockbb.thor.commons.api.dto.SessionDTO" id="session_1">
+        <id column="id"                           property="id" />
+        <result column="app"                      property="app" />
+        <result column="user_id"                  property="userId" />
+        <result column="started_at"               property="startedAt" />
+        <result column="updated_at"               property="updatedAt" />
+        <result column="language"                 property="language" />
+        <result column="autologin"                property="autologin" />
+        <result column="token"                    property="token" />
+        <result column="secure1"                  property="secure1" />
+        <result column="secure2"                  property="secure2" />
+        <result column="secure3"                  property="secure3" />
+    </resultMap>
+    <sql id="key">id</sql>
+    <sql id="columns">
+        app, user_id, started_at, updated_at, language, autologin, 
+        token, secure1, secure2, secure3
+    </sql>
+    <sql id="table">s_session</sql>
+
+	<insert id="insert" parameterType="com.rockbb.thor.commons.api.dto.SessionDTO">
+        INSERT INTO <include refid="table" />
+        (<include refid="key" />, <include refid="columns" />)
+        VALUES (
+        #{id},
+        #{app},
+        #{userId},
+        #{startedAt},
+        #{updatedAt},
+        #{language},
+        #{autologin},
+        #{token},
+        #{secure1},
+        #{secure2},
+        #{secure3})
+    </insert>
+
+    <update id="update" parameterType="com.rockbb.thor.commons.api.dto.SessionDTO">
+        UPDATE <include refid="table" /> SET
+            app                 = #{app},
+            user_id             = #{userId},
+            started_at          = #{startedAt},
+            updated_at          = #{updatedAt},
+            language            = #{language},
+            autologin           = #{autologin},
+            token               = #{token},
+            secure1             = #{secure1},
+            secure2             = #{secure2},
+            secure3             = #{secure3}
+        WHERE id = #{id}
+    </update>
+
+    <update id="alter" parameterType="java.util.Map">
+        UPDATE <include refid="table" />
+        <set>
+            <if test="param.app != null">app                        = #{param.app},</if>
+            <if test="param.userId != null">user_id                 = #{param.userId},</if>
+            <if test="param.startedAt != null">started_at           = #{param.startedAt},</if>
+            <if test="param.updatedAt != null">updated_at           = #{param.updatedAt},</if>
+            <if test="param.language != null">language              = #{param.language},</if>
+            <if test="param.autologin != null">autologin            = #{param.autologin},</if>
+            <if test="param.token != null">token                    = #{param.token},</if>
+            <if test="param.secure1 != null">secure1                = #{param.secure1},</if>
+            <if test="param.secure2 != null">secure2                = #{param.secure2},</if>
+            <if test="param.secure3 != null">secure3                = #{param.secure3},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM <include refid="table" />
+        WHERE id = #{id}
+    </delete>
+
+    <select id="select" parameterType="java.lang.String" resultMap="session_1">
+        SELECT <include refid="key" />, <include refid="columns" />
+        FROM <include refid="table" />
+        WHERE id = #{id}
+    </select>
+
+    <select id="countAll" resultType="long">
+        SELECT COUNT(<include refid="key" />)
+        FROM <include refid="table" />
+    </select>
+
+    <delete id="cleanExpired" parameterType="long">
+        DELETE FROM <include refid="table" />
+        WHERE
+            (updated_at &lt;= #{normalLimit} AND autologin = 0) OR
+            updated_at &lt;= #{autologinLimit}
+    </delete>
+
+    <delete id="truncate">
+        TRUNCATE <include refid="table" />
+    </delete>
+
+    <sql id="params">
+        <if test="param.app != null">AND app = #{param.app}</if>
+        <if test="param.userId != null">AND user_id = #{param.userId}</if>
+        <if test="param.startAfter != null">AND started_at &gt;= #{param.startAfter}</if>
+        <if test="param.startBefore != null">AND started_at &lt;= #{param.startBefore}</if>
+        <if test="param.updateAfter != null">AND updated_at &gt;= #{param.updateAfter}</if>
+        <if test="param.updateBefore != null">AND updated_at &lt;= #{param.updateBefore}</if>
+    </sql>
+
+    <select id="list" resultMap="session_1">
+        SELECT
+            <include refid="key" />, <include refid="columns" />
+        FROM
+            <include refid="table" />
+        <where>
+            <include refid="params" />
+        </where>
+        ORDER BY
+            ${pager.sort} ${pager.order}
+        LIMIT
+            #{pager.offset}, #{pager.limit}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT
+            COUNT(<include refid="key" />) 
+        FROM
+            <include refid="table" />
+        <where>
+            <include refid="params" />
+        </where>
+    </select>
+</mapper>

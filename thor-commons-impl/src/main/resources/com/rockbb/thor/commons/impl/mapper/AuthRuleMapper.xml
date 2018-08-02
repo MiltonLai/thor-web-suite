@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/builder/xml/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rockbb.thor.commons.impl.mapper.AuthRuleMapper">
+    <cache eviction="LRU" flushInterval="300000" size="128" readOnly="true" />
+    <resultMap type="com.rockbb.thor.commons.api.dto.AuthRuleDTO" id="authrule_1">
+        <id column="id"                           property="id" />
+        <result column="name"                     property="name" />
+        <result column="regex"                    property="regex" />
+        <result column="auth_index"               property="index" />
+        <result column="status"                   property="status" />
+    </resultMap>
+    <sql id="key">id</sql>
+    <sql id="columns">
+        name, regex, auth_index, status
+    </sql>
+    <sql id="table">s_auth_rule</sql>
+
+	<insert id="insert" parameterType="com.rockbb.thor.commons.api.dto.AuthRuleDTO">
+        INSERT INTO <include refid="table" />
+        (<include refid="key" />, <include refid="columns" />)
+        VALUES (
+        #{id},
+        #{name},
+        #{regex},
+        #{index},
+        #{status})
+    </insert>
+
+    <update id="update" parameterType="com.rockbb.thor.commons.api.dto.AuthRuleDTO">
+        UPDATE <include refid="table" /> SET
+            name                = #{name},
+            regex               = #{regex},
+            auth_index          = #{index},
+            status              = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <update id="alter" parameterType="java.util.Map">
+        UPDATE <include refid="table" />
+        <set>
+            <if test="param.name != null">name                      = #{param.name},</if>
+            <if test="param.regex != null">regex                    = #{param.regex},</if>
+            <if test="param.authIndex != null">auth_index           = #{param.authIndex},</if>
+            <if test="param.status != null">status                  = #{param.status},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM <include refid="table" />
+        WHERE id = #{id}
+    </delete>
+
+    <select id="select" parameterType="java.lang.String" resultMap="authrule_1">
+        SELECT <include refid="key" />, <include refid="columns" />
+        FROM <include refid="table" />
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByIndex" parameterType="int" resultMap="authrule_1">
+        SELECT <include refid="key" />, <include refid="columns" />
+        FROM <include refid="table" />
+        WHERE auth_index = #{index}
+    </select>
+
+    <sql id="params">
+        <if test="param.status != null">AND status = #{param.status}</if>
+    </sql>
+
+    <select id="list" resultMap="authrule_1">
+        SELECT
+            <include refid="key" />, <include refid="columns" />
+        FROM
+            <include refid="table" />
+        <where>
+            <include refid="params" />
+        </where>
+        ORDER BY
+            ${pager.sort} ${pager.order}
+        LIMIT
+            #{pager.offset}, #{pager.limit}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT
+            COUNT(<include refid="key" />) 
+        FROM
+            <include refid="table" />
+        <where>
+            <include refid="params" />
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+	<!-- 本模块参数 -->
+	<constant name="in_development" value="${mode.development}" type="int" />
+
+	<constant name="build_timestamp" value="${timestamp}" type="string" />
+
+	<constant name="site_base" value="${mobile.site.base}" type="string" />
+	<constant name="root_path" value="${mobile.root.path}" type="string" />
+	<constant name="resource_path" value="${mobile.resource.path}" type="string" />
+
+	<constant name="cookie_prefix" value="THOR9MO_" type="string" />
+	<constant name="encoding" value="UTF-8" type="string" />
+	<constant name="server-encoding" value="ISO-8859-1" type="string" />
+
+</configurations>

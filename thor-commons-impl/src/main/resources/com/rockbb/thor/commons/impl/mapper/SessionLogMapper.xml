@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/builder/xml/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rockbb.thor.commons.impl.mapper.SessionLogMapper">
+    <cache eviction="LRU" flushInterval="300000" size="128" readOnly="true" />
+    <resultMap type="com.rockbb.thor.commons.api.dto.SessionLogDTO" id="sessionlog_1">
+        <id column="id"                           property="id" />
+        <result column="session_id"               property="sessionId" />
+        <result column="app"                      property="app" />
+        <result column="user_id"                  property="userId" />
+        <result column="ip"                       property="ip" />
+        <result column="autologin"                property="autologin" />
+        <result column="language"                 property="language" />
+        <result column="secure1"                  property="secure1" />
+        <result column="secure2"                  property="secure2" />
+        <result column="secure3"                  property="secure3" />
+        <result column="created_at"               property="createdAt" />
+    </resultMap>
+    <sql id="key">id</sql>
+    <sql id="columns">
+        session_id, app, user_id, ip, autologin, language, secure1, secure2, secure3, created_at
+    </sql>
+    <sql id="table">s_session_log</sql>
+
+	<insert id="insert" parameterType="com.rockbb.thor.commons.api.dto.SessionLogDTO">
+        INSERT INTO <include refid="table" />
+        (<include refid="key" />, <include refid="columns" />)
+        VALUES (
+        #{id},
+        #{sessionId},
+        #{app},
+        #{userId},
+        #{ip},
+        #{autologin},
+        #{language},
+        #{secure1},
+        #{secure2},
+        #{secure3},
+        #{createdAt})
+    </insert>
+
+    <select id="select" parameterType="java.lang.String" resultMap="sessionlog_1">
+        SELECT <include refid="key" />, <include refid="columns" />
+        FROM <include refid="table" />
+        WHERE id = #{id}
+    </select>
+
+    <sql id="params">
+        <if test="param.sessionId != null">AND session_id = #{param.sessionId}</if>
+        <if test="param.userId != null">AND user_id = #{param.userId}</if>
+        <if test="param.ip != null">AND ip LIKE #{param.ip}</if>
+        <if test="param.timeBefore != null">AND created_at &lt; #{param.timeBefore}</if>
+        <if test="param.timeAfter != null">AND created_at &gt; #{param.timeAfter}</if>
+    </sql>
+
+    <select id="list" resultMap="sessionlog_1">
+        SELECT
+            <include refid="key" />, <include refid="columns" />
+        FROM
+            <include refid="table" />
+        <where>
+            <include refid="params" />
+        </where>
+        ORDER BY
+            ${pager.sort} ${pager.order}
+        LIMIT
+            #{pager.offset}, #{pager.limit}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT
+            COUNT(<include refid="key" />) 
+        FROM
+            <include refid="table" />
+        <where>
+            <include refid="params" />
+        </where>
+    </select>
+</mapper>

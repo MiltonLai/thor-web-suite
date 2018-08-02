@@ -1,0 +1,114 @@
+@charset "utf-8";
+
+/* 全局变量 */
+@color_red: #f05a5f;
+@color_light_red: #ffaaaa;
+@color_lightest_grey: #eff2f7;//最浅的边框颜色
+@color_grey_blue: #7999c9;
+
+/* 基础元素重设 */
+* {margin:0; padding: 0; outline: none; box-sizing: border-box; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);}
+html {height: 100%; min-height: 100%;}
+body {background: #f7f8fa; color: #818181; font-size: 11px; min-height: 100%; position: relative; font-family: "Helvetica Neue", Helvetica, Arial, 'Microsoft YaHei', sans-serif; overflow-x: hidden;}
+h1, h2, h3, h4, h5 {font-weight: normal;}
+a {color: inherit; text-decoration: none;}
+img {border: 0;}
+ul li {margin: 0; padding: 0; list-style: none;}
+table {border-collapse: collapse; border-spacing: 0;}
+
+input[type=tel],
+input[type=text],
+input[type=password],
+input[type=button],
+input[type=submit] {-webkit-appearance: none; appearance: none; outline: none; font-family: "Helvetica Neue", Helvetica, Arial, 'Microsoft YaHei', sans-serif;}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {-webkit-appearance: none; appearance: none; margin: 0;}
+input[type=button]:disabled,
+input[type=submit]:disabled {background: #e1e1e2;}
+
+/* 全局色彩定义 */
+.red           {color:@color_red;}
+.light-red     {color:@color_light_red;}
+.lightest-grey {color:@color_lightest_grey;}
+
+.bg-white      {background:#fff;}
+.bg-grey       {background:#f7f8fa;}
+.bg-red        {background:@color_red; color:#fff;}
+.bg-light-red  {background:@color_light_red; color:#fff;}
+
+.a-grey-blue   a{color:@color_grey_blue}
+
+/* 间距定义 */
+.p0 {padding: 0 !important;}
+.p5 {padding: 5px;}
+.p10{padding:10px;}
+.p15{padding:15px;}
+.p20{padding:20px;}
+
+.pt0 {padding-top:0 !important;}.pr0{padding-right:0 !important;}.pb0{padding-bottom:0 !important;}.pl0{padding-left:0 !important;}
+.pt2 {padding-top: 2px;}
+.pt5 {padding-top: 5px;}.pr5 {padding-right: 5px !important;}.pb5 {padding-bottom: 5px;}.pl5 {padding-left:5px;}
+.pt10{padding-top:10px;}.pr10{padding-right:10px !important;}.pb10{padding-bottom:10px;}.pl10{padding-left:10px;}
+
+.pt15{padding-top:15px;}.pr15{padding-right:15px !important;}.pb15{padding-bottom:15px;}.pl15{padding-left:15px;}
+.pt20{padding-top:20px;}.pr20{padding-right:20px !important;}.pb20{padding-bottom:20px;}.pl20{padding-left:20px;}
+.pt30{padding-top:30px;}.pr30{padding-right:30px !important;}.pb30{padding-bottom:30px;}.pl30{padding-left:30px;}
+.pt40{padding-top:40px;}.pr40{padding-right:40px !important;}.pb40{padding-bottom:40px;}.pl40{padding-left:40px;}
+.pt60{padding-top:60px;}.pr60{padding-right:60px !important;}.pb60{padding-bottom:60px;}
+
+.mt1- {margin-top: -1px !important;}
+.mt5- {margin-top: -5px !important;}
+.mt10-{margin-top:-10px !important;}
+.mt15-{margin-top:-15px;}
+.mt5  {margin-top:  5px;}.mr5 {margin-right: 5px;}.mb5 {margin-bottom: 5px;}.ml5 {margin-left: 5px !important;}
+.mt10 {margin-top: 10px;}.mr10{margin-right:10px;}.mb10{margin-bottom:10px;}.ml10{margin-left:10px !important;}
+.mt15 {margin-top: 15px;}.mr15{margin-right:15px;}.mb15{margin-bottom: 15px}.ml15{margin-left:15px !important;}
+.mt20 {margin-top: 20px;}.mr20{margin-right:20px;}.mb20{margin-bottom: 20px}.ml20{margin-left:20px !important;}
+.mt25 {margin-top: 25px;}.mr25{margin-right:25px;}.mb25{margin-bottom: 25px}.ml25{margin-left:25px !important;}
+.mb50{margin-bottom:50px !important;}
+.mb60{margin-bottom:60px !important;}
+
+.ph5 {min-height: 5px;}
+.ph10{min-height:10px;}
+.ph15{min-height:15px;}
+
+// 栅格化定义
+.col-12-1{width:8.33%;}
+.col-12-2{width:16.66%;}
+.col-12-3{width:24.99%;}
+.col-12-4{width:33.32%;}
+.col-12-5{width:41.65%;}
+.col-12-6{width:50%;}
+.col-12-7{width:58.31%;}
+.col-12-8{width:66.64%;}
+.col-12-9{width:74.97%;}
+.col-12-10{width:83.33%;}
+.col-12-11{width:91.63%;}
+.col-12-12{width:100%;}
+
+.col-10-1{width:10%;}
+.col-10-2{width:20%;}
+.col-10-3{width:30%;}
+.col-10-4{width:40%;}
+.col-10-5{width:50%;}
+.col-10-6{width:60%;}
+.col-10-7{width:70%;}
+.col-10-8{width:80%;}
+.col-10-9{width:90%;}
+.col-10-10{width:100%;}
+
+// 位置定义
+.relative{position:relative;}
+.absolute{position:absolute;}
+.none{display: none;}
+.block{display: block;}
+.inlineBlock{display: inline-block;}
+.clear{clear:both}
+.l{float:left;}
+.r{float:right;}
+.text-center{text-align: center;}
+.text-right{text-align: right;}
+.text-left{text-align: left;}
+
+.scroll{overflow-y:auto;height:100%;}
+.noscroll{position: fixed!important}

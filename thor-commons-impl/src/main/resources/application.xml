@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+	<!-- !!模式!! -->
+	<constant name="in_development" value="${mode.development}" type="int" />
+
+</configurations>

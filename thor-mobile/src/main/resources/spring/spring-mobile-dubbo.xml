@@ -1,0 +1,18 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://code.alibabatech.com/schema/dubbo
+		http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:application name="${dubbo.application.name}"/>
+	<dubbo:registry address="${dubbo.registry}"/>
+	<dubbo:consumer version="${dubbo.application.version}"/>
+	<dubbo:reference id="adminRoleDTOService" interface="com.rockbb.thor.commons.api.service.AdminRoleDTOService" />
+	<dubbo:reference id="adminUserDTOService" interface="com.rockbb.thor.commons.api.service.AdminUserDTOService" />
+	<dubbo:reference id="authRuleDTOService" interface="com.rockbb.thor.commons.api.service.AuthRuleDTOService" />
+	<dubbo:reference id="configDTOService" interface="com.rockbb.thor.commons.api.service.ConfigDTOService" />
+	<dubbo:reference id="sessionManager" interface="com.rockbb.thor.commons.api.service.SessionManager" />
+	<dubbo:reference id="userDTOService" interface="com.rockbb.thor.commons.api.service.UserDTOService" />
+</beans>

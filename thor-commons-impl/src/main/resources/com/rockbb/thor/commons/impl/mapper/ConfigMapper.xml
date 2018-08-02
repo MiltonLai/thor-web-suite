@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/builder/xml/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rockbb.thor.commons.impl.mapper.ConfigMapper">
+    <cache eviction="LRU" flushInterval="300000" size="128" readOnly="true" />
+    <resultMap type="com.rockbb.thor.commons.impl.po.ConfigPO" id="config_1">
+        <id column="category"                     property="category" />
+        <id column="name"                         property="name" />
+        <result column="title"                    property="title" />
+        <result column="value"                    property="value" />
+        <result column="type"                     property="type" />
+        <result column="default_value"            property="defaultValue" />
+        <result column="notes"                    property="notes" />
+    </resultMap>
+    <sql id="key">category, name</sql>
+    <sql id="columns">
+        title, value, type, default_value, notes
+    </sql>
+    <sql id="table">s_config</sql>
+
+	<insert id="insert" parameterType="com.rockbb.thor.commons.impl.po.ConfigPO">
+        INSERT INTO <include refid="table" />
+        (<include refid="key" />, <include refid="columns" />)
+        VALUES (
+        #{name},
+        #{value},
+        #{type},
+        #{defaultValue},
+        #{notes})
+    </insert>
+
+    <update id="update" parameterType="com.rockbb.thor.commons.impl.po.ConfigPO">
+        UPDATE <include refid="table" /> SET
+            title               = #{title},
+            value               = #{value},
+            type                = #{type},
+            default_value       = #{defaultValue},
+            notes               = #{notes}
+        WHERE category = #{category} AND name = #{name}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM <include refid="table" />
+        WHERE category = #{category} AND name = #{name}
+    </delete>
+
+    <select id="select" parameterType="java.lang.String" resultMap="config_1">
+        SELECT <include refid="key" />, <include refid="columns" />
+        FROM <include refid="table" />
+        WHERE category = #{category} AND name = #{name}
+    </select>
+
+    <sql id="params">
+        <if test="param.category != null">AND category = #{param.category}</if>
+        <if test="param.name != null">AND name = #{param.name}</if>
+    </sql>
+
+    <select id="list" resultMap="config_1">
+        SELECT
+            <include refid="key" />, <include refid="columns" />
+        FROM
+            <include refid="table" />
+        <where>
+            <include refid="params" />
+        </where>
+        ORDER BY
+            ${pager.sort} ${pager.order}, ${pager.sort2} ${pager.order2}
+        LIMIT
+            #{pager.offset}, #{pager.limit}
+    </select>
+
+    <select id="listByCategory" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+            `name`
+        FROM
+            <include refid="table" />
+        WHERE
+            category = #{category}
+        ORDER BY
+            name ASC
+    </select>
+</mapper>

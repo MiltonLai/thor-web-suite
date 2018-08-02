@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <localRepository/>
+  <interactiveMode/>
+  <offline/>
+  <pluginGroups/>
+  <proxies/>
+
+  <servers>
+  </servers>
+
+  <mirrors>
+    <mirror>
+      <id>yhc-public</id>
+      <name>Public Repositories</name>
+      <url>https://maven.aliyun.com/repository/public</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors>
+
+  <profiles>
+
+    <profile>
+      <id>dev</id>
+      <properties>
+        <mode.development>1</mode.development>
+        <developer>milton</developer>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyyMMdd_HHmm</maven.build.timestamp.format>
+        <logback.path>/home/milton/logs</logback.path>
+        <logback.appender>stdout</logback.appender>
+        <!-- dubbo -->
+        <dubbo.protocol.port>10089</dubbo.protocol.port>
+        <dubbo.application.version>develop-${developer}</dubbo.application.version>
+        <dubbo.registry>zookeeper://127.0.0.1:2181</dubbo.registry>
+        <dubbo.registry.file.dir>/tmp/.dubbo/</dubbo.registry.file.dir>
+        <!-- db -->
+        <db.url>jdbc:mysql://127.0.0.1:6033/thor?useUnicode=true&amp;amp;characterEncoding=utf-8</db.url>
+        <db.user>root</db.user>
+        <db.password>root</db.password>
+        <!-- app site -->
+        <app.site.base>http://127.0.0.1:8080</app.site.base>
+        <app.root.path>/app</app.root.path>
+        <app.resource.path>/app/res</app.resource.path>        
+        <!-- mobile site -->
+        <mobile.site.base>http://127.0.0.1:8080</mobile.site.base>
+        <mobile.root.path>/mobile</mobile.root.path>
+        <mobile.resource.path>/mobile/res</mobile.resource.path>
+        <mobile.nfs.file.path>D:/workJava/temp</mobile.nfs.file.path>
+        <!-- admin site -->
+        <admin.site.base>http://127.0.0.1:8080</admin.site.base>
+        <admin.root.path>/admin</admin.root.path>
+        <admin.resource.path>/admin/res</admin.resource.path>
+      </properties>
+    </profile>
+
+  </profiles>
+
+  <activeProfiles>
+    
+  </activeProfiles>
+
+</settings>

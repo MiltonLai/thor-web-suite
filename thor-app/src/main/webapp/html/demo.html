@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>API Demo</title>
+	<script type="text/javascript" src="../res/jquery/js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../res/jquery-cookie/jquery.cookie.js"></script>
+	<script type="text/javascript" src="../res/assets/js/md5.js"></script>
+	<script type="text/javascript">
+		var sys_configs = new Object(); // Global js variable
+		sys_configs.site_base				= 'http://127.0.0.1:8080';
+		sys_configs.root_path				= '/app';
+		sys_configs.static_file_url	= '/app/res';
+		sys_configs.extension				= '.json';
+		sys_configs.cookie_prefix		= 'IREIM3_';
+	</script>
+</head>
+<body>
+<h3>System Token</h3>
+<button id="system_token_btn" class="button-set">Get System Token</button>
+<input id="system_token" type="text" value="" size="50">
+<hr>
+<h3>Client Parameters</h3>
+<table border="0">
+	<tr>
+		<td>secure1</td>
+		<td><input id="client_secure1" type="text" value="" size="50"></td>
+	</tr>
+	<tr>
+		<td>secure2</td>
+		<td><input id="client_secure2" type="text" value="" size="50"></td>
+	</tr>
+	<tr>
+		<td>secure3</td>
+		<td><input id="client_secure3" type="text" value="" size="50"></td>
+	</tr>
+</table>
+<button id="cookies_btn" class="button-set">Set Cookies</button>
+<hr>
+<h3>Get Session</h3>
+<button id="session_btn" class="button-set">Get New Session</button>
+<p><span id="session_url"></span></p>
+<table border="0">
+	<tr>
+		<td width="50">sid</td>
+		<td><input id="client_sid" type="text" value="" size="36"></td>
+	</tr>
+	<tr>
+		<td>token</td>
+		<td><input id="client_token" type="text" value="" size="36"></td>
+	</tr>
+</table>
+<hr>
+<h3>Login/Logout</h3>
+<button id="ping_btn" class="button-set">Ping</button>
+<input id="username" type="text" value="" size="20"> <input id="password" type="text" value="" size="20">
+<button id="login_btn" class="button-set">Login</button>
+<button id="logout_btn" class="button-set">Logout</button>
+<hr>
+<h3>Run Request</h3>
+/<input id="req_url" type="text" value="" size="100"> 
+<button id="req_btn" class="button-set">GO</button><button id="clean_btn" class="button-set">Clean</button>
+<textarea id="req_output" style="width:80%; height:150px; margin-top:10px;"></textarea>
+<hr>
+
+<script type="text/javascript">
+	$('#cookies_btn').click(function(){
+		set_cookie('#client_sid', 'sid');
+		set_cookie('#client_token', 'token');
+		set_cookie('#client_secure1', 'secure1');
+		set_cookie('#client_secure2', 'secure2');
+		set_cookie('#client_secure3', 'secure3');
+	});
+
+  $('#system_token_btn').click(function(){
+    $.ajax({
+      type : 'GET',
+      url : sys_configs.root_path + '/v1/bootup/fetch_token' + sys_configs.extension,
+      cache:false,
+      processData:false,
+      contentType:false,
+      dataType : "json"
+    }).done(function(data) {
+      $('#system_token').val(data.message);
+    }).fail(function(jqXHR) {
+      alert(jqXHR.responseText);
+    });
+  });
+
+  $('#session_btn').click(function(){
+    var timestamp = new Date().getTime();
+    var hash = hex_md5(
+			$('#system_token').val()
+    + $('#client_secure1').val()
+    + $('#client_secure2').val()
+    + $('#client_secure3').val()
+    + timestamp);
+    $('#session_url').text('?s1='+$('#client_secure1').val()
+    +'&s2='+$('#client_secure2').val()
+    +'&s3='+$('#client_secure3').val()
+    +'&t='+timestamp
+    +'&h='+hash);
+
+    $.ajax({
+      type : 'POST',
+      url : sys_configs.root_path + '/v1/bootup/session_start' + sys_configs.extension,
+      data:{
+        s1 : $('#client_secure1').val(),
+        s2 : $('#client_secure2').val(),
+        s3 : $('#client_secure3').val(),
+        t : timestamp,
+        h : hash
+      },
+      cache:false,
+      dataType : "json"
+    }).done(function(data) {
+      update_cookie('#client_sid', 'sid', data.id);
+      update_cookie('#client_token', 'token', data.token);
+    }).fail(function(jqXHR) {
+      alert(jqXHR.responseText);
+    });
+  });
+
+	$('#clean_btn').click(function(){
+		$('#req_output').val('');
+	});
+
+	$('#ping_btn').click(function(){
+		var parameters = gen_parameters();
+		var req_url = '/v1/entry/ping.json?' + parameters;
+
+		$.ajax({
+			type : 'POST',
+			url : sys_configs.root_path + req_url,
+			cache:false,
+			dataType : "text"
+		}).done(function(data) {
+			$('#req_output').val($('#req_output').val() + data +"\n");
+		}).fail(function(jqXHR) {
+			alert(jqXHR.responseText);
+		});
+	});
+
+	$('#login_btn').click(function(){
+		var parameters = gen_parameters();
+		var req_url = '/v1/entry/login.json?' + parameters;
+
+		$.ajax({
+			type : 'POST',
+			url : sys_configs.root_path + req_url,
+			cache:false,
+			data : {
+        login_phone : $('#username').val(),
+        login_pwd : $('#password').val()
+			},
+			dataType : "text"
+		}).done(function(data) {
+			$('#req_output').val($('#req_output').val() + data +"\n");
+		}).fail(function(jqXHR) {
+			alert(jqXHR.responseText);
+		});
+	});
+
+	$('#logout_btn').click(function(){
+		var parameters = gen_parameters();
+		var req_url = '/v1/entry/logout.json?' + parameters;
+
+		$.ajax({
+			type : 'POST',
+			url : sys_configs.root_path + req_url,
+			cache:false,
+			dataType : "text"
+		}).done(function(data) {
+			$('#req_output').val($('#req_output').val() + data +"\n");
+		}).fail(function(jqXHR) {
+			alert(jqXHR.responseText);
+		});
+	});
+
+	$('#req_btn').click(function(){
+		var parameters = gen_parameters();
+		var req_url = $('#req_url').val();
+		if (req_url.indexOf('?') == -1)
+			req_url += '?' + parameters;
+		else
+			req_url += '&' + parameters;
+
+		$.ajax({
+			type : 'POST',
+			url : sys_configs.root_path + '/' + req_url,
+			cache:false,
+			processData:false,
+			contentType:false,
+			dataType : "text"
+		}).done(function(data) {
+			$('#req_output').val($('#req_output').val() + data +"\n");
+		}).fail(function(jqXHR) {
+			alert(jqXHR.responseText);
+		});
+	});
+
+	$(document).ready(function(){
+		get_cookie('#client_sid', 'sid');
+		get_cookie('#client_token', 'token');
+		get_cookie('#client_secure1', 'secure1');
+		get_cookie('#client_secure2', 'secure2');
+		get_cookie('#client_secure3', 'secure3');
+	});
+
+	function gen_parameters() {
+		var timestamp = new Date().getTime();
+		var sec = hex_md5($('#client_secure1').val() + $('#client_secure2').val() + $('#client_secure3').val() + timestamp);
+		var parameters = 'k=' + $('#client_sid').val();
+		parameters += '&s=' + sec;
+		parameters += '&t=' + timestamp;
+		return parameters;
+	}
+
+	function get_cookie(elm_name, name) {
+		if ($.cookie(sys_configs.cookie_prefix + name) != null)
+			$(elm_name).val($.cookie(sys_configs.cookie_prefix + name));
+	}
+
+	function set_cookie(elm_name, name) {
+		$.cookie(sys_configs.cookie_prefix + name, $(elm_name).val(), {expires: 7});
+	}
+
+	function update_cookie(elm_name, name, value) {
+		$.cookie(sys_configs.cookie_prefix + name, value, {expires: 7});
+		$(elm_name).val(value);
+	}
+</script>
+</body>
+</html>

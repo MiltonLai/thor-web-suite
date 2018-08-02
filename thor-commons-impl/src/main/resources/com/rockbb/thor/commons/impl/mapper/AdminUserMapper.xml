@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/builder/xml/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rockbb.thor.commons.impl.mapper.AdminUserMapper">
+    <cache eviction="LRU" flushInterval="300000" size="128" readOnly="false" />
+    <resultMap type="com.rockbb.thor.commons.impl.po.AdminUserPO" id="adminuser_1">
+        <id column="id"                           property="id" />
+        <result column="type"                     property="type" />
+        <result column="name"                     property="name" />
+        <result column="hash"                     property="hash" />
+        <result column="password"                 property="password" />
+        <result column="secure_password"          property="securePassword" />
+        <result column="email"                    property="email" />
+        <result column="real_name"                property="realName" />
+        <result column="cellphone"                property="cellphone" />
+        <result column="role_id"                  property="roleId" />
+        <result column="status"                   property="status" />
+        <result column="created_at"               property="createdAt" />
+        <result column="creator_id"               property="creatorId" />
+        <result column="updated_at"               property="updatedAt" />
+        <result column="updater_id"               property="updaterId" />
+        <result column="version"                  property="version" />
+    </resultMap>
+    <sql id="key">id</sql>
+    <sql id="columns">
+        type, name, hash, password, secure_password, email, real_name,
+        cellphone, role_id, status, created_at, creator_id, updated_at, 
+        updater_id, version
+    </sql>
+    <sql id="table">s_admin_user</sql>
+
+	<insert id="insert" parameterType="com.rockbb.thor.commons.impl.po.AdminUserPO">
+        INSERT INTO <include refid="table" />
+        (<include refid="key" />, <include refid="columns" />)
+        VALUES (
+        #{id},
+        #{type},
+        #{name},
+        #{hash},
+        #{password},
+        #{securePassword},
+        #{email},
+        #{realName},
+        #{cellphone},
+        #{roleId},
+        #{status},
+        #{createdAt},
+        #{creatorId},
+        #{updatedAt},
+        #{updaterId},
+        #{version})
+    </insert>
+
+    <update id="update" parameterType="com.rockbb.thor.commons.impl.po.AdminUserPO">
+        UPDATE <include refid="table" /> SET
+            type                = #{type},
+            name                = #{name},
+            hash                = #{hash},
+            password            = #{password},
+            secure_password     = #{securePassword},
+            email               = #{email},
+            real_name           = #{realName},
+            cellphone           = #{cellphone},
+            role_id             = #{roleId},
+            status              = #{status},
+            created_at          = #{createdAt},
+            creator_id          = #{creatorId},
+            updated_at          = #{updatedAt},
+            updater_id          = #{updaterId},
+            version             = version + 1
+        WHERE id = #{id} AND version = #{version}
+    </update>
+
+    <update id="alter" parameterType="java.util.Map">
+        UPDATE <include refid="table" />
+        <set>
+            <if test="param.type != null">type                      = #{param.type},</if>
+            <if test="param.name != null">name                      = #{param.name},</if>
+            <if test="param.hash != null">hash                      = #{param.hash},</if>
+            <if test="param.password != null">password              = #{param.password},</if>
+            <if test="param.securePassword != null">secure_password  = #{param.securePassword},</if>
+            <if test="param.email != null">email                    = #{param.email},</if>
+            <if test="param.realName != null">real_name             = #{param.realName},</if>
+            <if test="param.cellphone != null">cellphone            = #{param.cellphone},</if>
+            <if test="param.roleId != null">role_id                 = #{param.roleId},</if>
+            <if test="param.status != null">status                  = #{param.status},</if>
+            <if test="param.createdAt != null">created_at           = #{param.createdAt},</if>
+            <if test="param.creatorId != null">creator_id           = #{param.creatorId},</if>
+            <if test="param.updatedAt != null">updated_at           = #{param.updatedAt},</if>
+            <if test="param.updaterId != null">updater_id           = #{param.updaterId},</if>
+            version             = version + 1,
+        </set>
+        WHERE id = #{id} AND version = #{param.version}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM <include refid="table" />
+        WHERE id = #{id}
+    </delete>
+
+    <select id="select" parameterType="java.lang.String" resultMap="adminuser_1">
+        SELECT <include refid="key" />, <include refid="columns" />
+        FROM <include refid="table" />
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByName" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT <include refid="key" />
+        FROM <include refid="table" />
+        WHERE name = #{name}
+    </select>
+
+    <select id="selectByEmail" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT <include refid="key" />
+        FROM <include refid="table" />
+        WHERE email = #{email}
+    </select>
+
+    <select id="selectByCellphone" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT <include refid="key" />
+        FROM <include refid="table" />
+        WHERE cellphone = #{cellphone}
+    </select>
+
+    <sql id="params">
+        <if test="param.name != null">AND name LIKE #{param.name}</if>
+        <if test="param.real_name != null">AND name LIKE #{param.realName}</if>
+        <if test="param.email != null">AND name LIKE #{param.email}</if>
+        <if test="param.roleId != null">AND role_id = #{param.roleId}</if>
+    </sql>
+
+    <select id="list" resultMap="adminuser_1">
+        SELECT
+            <include refid="key" />, <include refid="columns" />
+        FROM
+            <include refid="table" />
+        <where>
+            <include refid="params" />
+        </where>
+        ORDER BY
+            ${pager.sort} ${pager.order}
+        LIMIT
+            #{pager.offset}, #{pager.limit}
+    </select>
+
+    <select id="listIds" resultType="java.lang.String">
+        SELECT
+            <include refid="key" />
+        FROM
+            <include refid="table" />
+        <where>
+            <include refid="params" />
+        </where>
+        ORDER BY
+            ${pager.sort} ${pager.order}
+        LIMIT
+            #{pager.offset}, #{pager.limit}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT
+            COUNT(<include refid="key" />) 
+        FROM
+            <include refid="table" />
+        <where>
+            <include refid="params" />
+        </where>
+    </select>
+</mapper>

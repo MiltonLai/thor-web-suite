@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="2 minutes">
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder charset="UTF-8">
+            <pattern>%d{yyMMdd HH:mm:ssSSS} %8.8thread %1.-1level %25.25logger{50}#%3.3line %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/app_logs/thor-app-%d{yyyyMMdd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d{yyMMdd HH:mm:ssSSS} %8.8thread %1.-1level %25.25logger{50}#%3.3line %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="freemarker">
+        <level value="INFO"/>
+    </logger>
+    <logger name="org.springframework">
+        <level value="INFO"/>
+    </logger>
+    <logger name="java.sql">
+        <level value="DEBUG"/>
+    </logger>
+    <logger name="org.mybatis">
+        <level value="INFO"/>
+    </logger>
+    <logger name="org.apache.ibatis">
+        <level value="INFO"/>
+    </logger>
+    <logger name="org.apache.zookeeper">
+        <level value="INFO"/>
+    </logger>
+    <logger name="com.rockbb.thor.app">
+        <level value="DEBUG"/>
+    </logger>
+    <logger name="com.alibaba.dubbo">
+        <level value="INFO"/>
+    </logger>
+
+    <root>
+        <level value="DEBUG"/>
+        <appender-ref ref="${logback.appender}"/>
+    </root>
+</configuration>

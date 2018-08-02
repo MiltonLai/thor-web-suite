@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/builder/xml/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rockbb.thor.commons.impl.mapper.AdminRoleMapper">
+    <cache eviction="LRU" flushInterval="300000" size="128" readOnly="true" />
+    <resultMap type="com.rockbb.thor.commons.api.dto.AdminRoleDTO" id="adminrole_1">
+        <id column="id"                           property="id" />
+        <result column="name"                     property="name" />
+        <result column="permissions"              property="permissions" />
+        <result column="menus"                    property="menus" />
+        <result column="notes"                    property="notes" />
+        <result column="updated_at"               property="updatedAt" />
+        <result column="updater_id"               property="updaterId" />
+    </resultMap>
+    <sql id="key">id</sql>
+    <sql id="columns">
+        name, permissions, menus, notes, updated_at, updater_id
+    </sql>
+    <sql id="table">s_admin_role</sql>
+
+	<insert id="insert" parameterType="com.rockbb.thor.commons.api.dto.AdminRoleDTO">
+        INSERT INTO <include refid="table" />
+        (<include refid="key" />, <include refid="columns" />)
+        VALUES (
+        #{id},
+        #{name},
+        #{permissions},
+        #{menus},
+        #{notes},
+        #{updatedAt},
+        #{updaterId})
+    </insert>
+
+    <update id="update" parameterType="com.rockbb.thor.commons.api.dto.AdminRoleDTO">
+        UPDATE <include refid="table" /> SET
+            name                = #{name},
+            permissions         = #{permissions},
+            menus               = #{menus},
+            notes               = #{notes},
+            updated_at          = #{updatedAt},
+            updater_id          = #{updaterId}
+        WHERE id = #{id}
+    </update>
+
+    <update id="alter" parameterType="java.util.Map">
+        UPDATE <include refid="table" />
+        <set>
+            <if test="param.name != null">name                      = #{param.name},</if>
+            <if test="param.permissions != null">permissions        = #{param.permissions},</if>
+            <if test="param.menus != null">menus                    = #{param.menus},</if>
+            <if test="param.notes != null">notes                    = #{param.notes},</if>
+            <if test="param.updatedAt != null">updated_at           = #{param.updatedAt},</if>
+            <if test="param.updaterId != null">updater_id           = #{param.updaterId},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM <include refid="table" />
+        WHERE id = #{id}
+    </delete>
+
+    <select id="select" parameterType="java.lang.String" resultMap="adminrole_1">
+        SELECT <include refid="key" />, <include refid="columns" />
+        FROM <include refid="table" />
+        WHERE id = #{id}
+    </select>
+
+    <sql id="params">
+
+    </sql>
+
+    <select id="list" resultMap="adminrole_1">
+        SELECT
+            <include refid="key" />, <include refid="columns" />
+        FROM
+            <include refid="table" />
+        <where>
+            <include refid="params" />
+        </where>
+        ORDER BY
+            ${pager.sort} ${pager.order}
+        LIMIT
+            #{pager.offset}, #{pager.limit}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT
+            COUNT(<include refid="key" />) 
+        FROM
+            <include refid="table" />
+        <where>
+            <include refid="params" />
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+	<!-- 本模块参数 -->
+	<constant name="in_development" value="${mode.development}" type="int" />
+
+	<constant name="build_timestamp" value="${timestamp}" type="string" />
+
+	<constant name="site_base" value="${admin.site.base}" type="string" />
+	<constant name="root_path" value="${admin.root.path}" type="string" />
+	<constant name="resource_path" value="${admin.resource.path}" type="string" />
+
+	<constant name="cookie_prefix" value="THOR9AD_" type="string" />
+	<constant name="encoding" value="UTF-8" type="string" />
+	<constant name="server-encoding" value="ISO-8859-1" type="string" />
+
+</configurations>
